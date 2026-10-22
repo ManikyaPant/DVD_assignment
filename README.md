@@ -1,24 +1,84 @@
 # 4-bit Array Multiplier: RTL to GDSII
 
-## Team
+Name: Manikya Pant
 
-- Member 1: TODO name and roll number
-- Member 2: TODO name and roll number
+Roll number: 2023112024
+
+## Repository layout
+
+Clone this repository as `mult4_2023112024`. Run all design commands from
+its root; the directory names and required filenames follow Section 5 of
+the assignment.
+
+```text
+mult4_2023112024/
+|-- README.md
+|-- rtl/
+|   |-- full_adder.v
+|   `-- mult_array.v
+|-- tb/
+|   `-- tb_mult.v
+|-- synth/
+|   |-- synth.tcl
+|   |-- mult_array_netlist.v
+|   `-- mult_array_stat.rpt
+|-- sta/
+|   |-- sta.tcl
+|   `-- mult_array_timing.rpt
+|-- pnr/
+|   `-- config.json
+`-- report/
+    |-- part_b_results.md
+    `-- part_c_results.md
+```
+
+Final submission files still pending: `pnr/metrics.json`,
+`pnr/mult_array.gds`, and `report/report.pdf`. The results notes and saved
+logs are supporting evidence for the final report. Physical-design runs,
+simulation executables, and waveforms are excluded from Git.
 
 ## Working directory
 
-Host: `/home/ubuntu-user/sem7/dvd/designs/mult_array`
-Container: `/foss/designs/mult_array`
+Host checkout in this workspace: `/home/ubuntu-user/sem7/dvd`.
+Container project directory: `/foss/designs/mult4_2023112024`.
 
-## Command log
+Mount the repository root at that container directory. An existing container
+that mounted only the former `designs/` directory must be recreated with the
+new bind mount. For a command-line session, run from the repository root:
 
-Record the exact commands you run for each assignment step, in order.
+```bash
+docker run --rm -it \
+  --mount "type=bind,source=$PWD,target=/foss/designs/mult4_2023112024" \
+  docker.io/hpretl/iic-osic-tools:latest bash -l
+```
 
-## Files
+## Simulation, synthesis, and timing commands
 
-RTL, simulation, synthesis, and timing-analysis source files are implemented.
-The physical-design configuration is prepared; final physical-design artifacts
-and the completed report PDF are pending.
+The saved logs record runs made before the repository was reorganized.
+Their design-relative paths remain valid. To reproduce those steps with
+the new layout, run inside the EDA container with `PDK_ROOT` set:
+
+```bash
+cd /foss/designs/mult4_2023112024
+set -o pipefail
+
+# Part A: RTL verification.
+iverilog -g2012 -o sim tb/tb_mult.v rtl/full_adder.v rtl/mult_array.v
+vvp sim 2>&1 | tee report/part_a_pass.log
+
+# Part B: synthesis and gate-level verification.
+yosys -c synth/synth.tcl 2>&1 | tee report/part_b_synthesis.log
+CELLS="$PDK_ROOT/sky130A/libs.ref/sky130_fd_sc_hd/verilog"
+iverilog -g2012 -DFUNCTIONAL '-DUNIT_DELAY=#1' -o gls \
+  tb/tb_mult.v "$CELLS/primitives.v" "$CELLS/sky130_fd_sc_hd.v" \
+  synth/mult_array_netlist.v
+vvp gls 2>&1 | tee report/part_b_gls.log
+
+# Part C: typical-corner timing at 10 ns, then near the minimum period.
+sta -exit sta/sta.tcl 2>&1 | tee report/part_c_10ns.log
+cp sta/mult_array_timing.rpt report/part_c_10ns_timing.rpt
+CLOCK_PERIOD=2.60 sta -exit sta/sta.tcl 2>&1 | tee report/part_c_tmin.log
+```
 
 ## Part D: physical design
 
@@ -28,7 +88,7 @@ Initial configured clock period: 3.5 ns, calculated by rounding
 Run inside the container:
 
 ```bash
-cd /foss/designs/mult_array/pnr
+cd /foss/designs/mult4_2023112024/pnr
 set -o pipefail
 python3 -m librelane config.json 2>&1 | tee "../report/part_d_$(date +%Y%m%d_%H%M%S).log"
 ```

@@ -1,0 +1,14 @@
+# Local tooling and reference material.
+/environment/
+/.agents/
+/.aws/
+/.codex/
+/RTL_to_GDS-1.pdf
+/VLSI_4bit_Multiplier_Assignment_Student_Guide.pdf
+
+# Generated working files; retain the assignment's named deliverables.
+**/runs/
+/sim
+/gls
+*.vcd
+__pycache__/
