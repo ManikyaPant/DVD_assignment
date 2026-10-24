@@ -6,6 +6,6 @@ module full_adder (
     output wire cout
 );
 
-    assign sum  = a ^ b ^cin;
+    assign sum  = a ^ b ^ cin;
     assign cout = (a & b) | (b & cin) | (cin & a);
 endmodule
