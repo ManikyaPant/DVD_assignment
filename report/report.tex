@@ -384,8 +384,8 @@ Using the Section 2 formulas ($\text{FA}(N) = N(N-1)$ full adders, $N^2$ AND gat
 A 4-bit unsigned registered array multiplier (\texttt{mult\_array}) was designed structurally in Verilog using 16 AND gates, 12 full adders, and 16 flip-flops, verified across all 256 vectors in RTL and gate-level simulation (\texttt{PASS: 256 vectors checked, 0 errors}) alongside a 95-error fault-injection test, synthesized with Yosys to 67 \texttt{sky130\_fd\_sc\_hd} cells ($746.966\,\mu\text{m}^2$, $53.60\%$ sequential area), analyzed in OpenSTA ($T_{\min} = 2.604\text{ ns}$, $F_{\max} = 384.02\text{ MHz}$), and implemented through 8 LibreLane/OpenROAD runs into a DRC- and LVS-clean $150\,\mu\text{m} \times 150\,\mu\text{m}$ GDSII layout achieving $153.01\text{ MHz}$ multi-corner signoff operation ($316.34\text{ MHz}$ nominal).
 
 % ==================== APPENDIX ====================
-\appendix
-\subsection{Complete Simulation Logs (Passed Run, GLS, and 95-Error Injection)}
+\section*{Appendix}
+\subsection*{A. Complete Simulation Logs (Passed Run, GLS, and 95-Error Injection)}
 \label{app:logs}
 
 \begin{lstlisting}[title={\textbf{1. Part A Behavioral RTL Pass Log \& Part B GLS Pass Log}}]
@@ -454,7 +454,7 @@ FAIL: 256 vectors checked, 95 errors
 tb/tb_mult.v:75: $finish called at 5146000 (1ps)
 \end{lstlisting}
 
-\subsection{OpenSTA Critical Path Timing Report (\texttt{sta/mult\_array\_timing.rpt})}
+\subsection*{B. OpenSTA Critical Path Timing Report (\texttt{sta/mult\_array\_timing.rpt})}
 \begin{lstlisting}[title={\textbf{OpenSTA Critical Path Report ($T_{\text{clk}} = 2.60\text{ ns}$ and $10.00\text{ ns}$)}},basicstyle=\ttfamily\tiny]
 Startpoint: rst_n (input port clocked by clk) -> Endpoint: _094_ (recovery)
 Path Group: asynchronous | Path Type: max | Arrival: 1.000 ns
@@ -482,5 +482,32 @@ Path Group: clk   | Path Type: max
 -----------------------------------------------------------
            -0.004   slack at T = 2.60 ns (+7.396 ns slack MET at T = 10.00 ns)
 \end{lstlisting}
+
+% ==================== VIII. TEAM CONTRIBUTIONS ====================
+\section{Team Contributions}
+
+\begin{table}[!h]
+    \centering
+    \caption{Alternating Part-Wise Team Contribution Breakdown.}
+    \label{tab:contributions}
+    \footnotesize
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabularx}{\columnwidth}{@{}l l >{\raggedright\arraybackslash}X r@{}}
+        \toprule
+        \textbf{Part} & \textbf{Team Member} & \textbf{Deliverables \& Report Scope} & \textbf{Weight} \\
+        \midrule
+        \textbf{Part A} & Manikya Pant (\texttt{2023112024}) & RTL design (\texttt{full\_adder.v}, \texttt{mult\_array.v}), testbench (\texttt{tb\_mult.v}), 256-vector \& fault sims, waveform, hand trace, block diagram, Q1 & 30\% \\
+        \midrule
+        \textbf{Part B} & Aryan Agrawal (\texttt{2023102050}) & Yosys synthesis (\texttt{synth.tcl}, \texttt{mult\_array\_netlist.v}), cell/area analysis (\texttt{mult\_array\_stat.rpt}), gate-level simulation, Q3 & 20\% \\
+        \midrule
+        \textbf{Part C} & Manikya Pant (\texttt{2023112024}) & OpenSTA script (\texttt{sta.tcl}), $T_{\min}$/$F_{\max}$ timing analysis, 8-cell critical path trace (\texttt{mult\_array\_timing.rpt}), Q2, Q6 & 20\% \\
+        \midrule
+        \textbf{Part D} & Aryan Agrawal (\texttt{2023102050}) & LibreLane PnR (\texttt{config.json}), 8-run \texttt{CLOCK\_PERIOD} sweep, \texttt{metrics.json}, KLayout GDS screenshots (\texttt{mult\_array.gds}), Q4, Q5 & 30\% \\
+        \midrule
+        \multicolumn{2}{@{}l}{\textbf{Manikya Pant (\texttt{2023112024})}} & \textbf{Part A (30\%) + Part C (20\%)} & \textbf{50\%} \\
+        \multicolumn{2}{@{}l}{\textbf{Aryan Agrawal (\texttt{2023102050})}} & \textbf{Part B (20\%) + Part D (30\%)} & \textbf{50\%} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
 
 \end{document}
