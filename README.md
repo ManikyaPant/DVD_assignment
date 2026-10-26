@@ -2,6 +2,8 @@
 
 - **Name**: Manikya Pant
 - **Roll number**: `2023112024`
+- **Name**: Aryan Agrawal
+- **Roll number**: `2023102050`
 - **Technology**: SkyWater SKY130 (`sky130A`), standard-cell library `sky130_fd_sc_hd`
 
 ---
