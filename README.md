@@ -4,6 +4,7 @@
 - **Roll number**: `2023112024`
 - **Name**: Aryan Agrawal
 - **Roll number**: `2023102050`
+- **GitHub Repository**: [https://github.com/ManikyaPant/DVD_assignment](https://github.com/ManikyaPant/DVD_assignment)
 - **Technology**: SkyWater SKY130 (`sky130A`), standard-cell library `sky130_fd_sc_hd`
 
 ---
@@ -13,7 +14,7 @@
 This repository follows the exact file architecture specified in Section 5 of the assignment guide:
 
 ```text
-mult4_2023112024/
+DVD_assignment/
 |-- README.md
 |-- rtl/
 |   |-- full_adder.v
@@ -33,6 +34,7 @@ mult4_2023112024/
 |   `-- mult_array.gds
 `-- report/
     |-- report.pdf
+    |-- report.tex
     `-- figures/
         |-- partA_block_diagram.png
         |-- partA_waveform.png
@@ -46,14 +48,14 @@ mult4_2023112024/
 
 ### 0. Environment Setup and Tool Check (Section 4)
 
-Start the IIC-OSIC-TOOLS container with the repository mounted at `/foss/designs/mult4_2023112024` and `sky130A` selected:
+Start the IIC-OSIC-TOOLS container with the team repository mounted at `/foss/designs/DVD_assignment` and `sky130A` selected:
 
 ```bash
 docker run --rm -it \
   -e USER_ID="$(id -u)" -e GROUP_ID="$(id -g)" \
   -e PDK=sky130A -e PDK_ROOT=/foss/pdks -e STD_CELL_LIBRARY=sky130_fd_sc_hd \
-  -v "$PWD":/foss/designs/mult4_2023112024 \
-  -w /foss/designs/mult4_2023112024 \
+  -v "$PWD":/foss/designs/DVD_assignment \
+  -w /foss/designs/DVD_assignment \
   docker.io/hpretl/iic-osic-tools:latest --skip bash -l
 ```
 
@@ -77,7 +79,7 @@ iverilog -g2012 -o sim tb/tb_mult.v rtl/full_adder.v rtl/mult_array.v
 vvp sim
 # -> PASS: 256 vectors checked, 0 errors
 
-# Task 5: View waveform for roll number 2023112024 (last digit 4 -> A = 9, B = 7, P = 63)
+# Task 5: View waveform for team member Manikya Pant's roll number 2023112024 (last digit 4 -> A = 4 + 5 = 9, B = 7, P = 63)
 gtkwave mult.vcd
 
 # Task 6: Error-injection test (temporarily change sum to a ^ b in rtl/full_adder.v)
@@ -118,17 +120,17 @@ vvp gls
 
 ```bash
 # Task 1 (Step 1): Run OpenSTA at T = 10.0 ns to find worst setup slack (WNS)
-CLOCK_PERIOD=10.0 sta -exit sta/sta.tcl
+CLOCK_PERIOD=10.0 sta sta/sta.tcl
 # -> worst slack max 7.40 (+7.396 ns in report)
 # -> T_min = 10.000 - 7.396 = 2.604 ns (2.60 ns rounded to 0.01 ns)
 # -> F_max = 1000 / 2.604 = 384.02 MHz
 
 # Task 1 (Step 2): Re-run OpenSTA at T = T_min = 2.60 ns (default in sta/sta.tcl)
-sta -exit sta/sta.tcl
+sta sta/sta.tcl
 # -> worst slack max -0.00 (-0.004 ns in sta/mult_array_timing.rpt, close to 0)
 ```
 
-- **Critical path**: `_106_` (`b_reg[0]`) $\rightarrow$ `8` combinational cells (`1` partial-product AND + `7` full-adder cells across `7` full-adder stages) $\rightarrow$ `_100_` (`p[6]`).
+- **Critical path**: `_106_` (`b_reg[0]`) $\rightarrow$ `8` combinational cells (`1` partial-product AND + `7` adder-network cells) $\rightarrow$ `_100_` (`p[6]`).
 
 ---
 
@@ -162,4 +164,4 @@ klayout pnr/mult_array.gds
 | 7 | 6.5 | -0.035 | +3.339 | +0.113 | 0 | 0 | FAIL (setup, `ss` corner) |
 | **8** | **7.0** | **+0.465** | **+3.839** | **+0.113** | **0** | **0** | **PASS (final)** |
 
-- **Final physical-design summary**: `CLOCK_PERIOD = 7.0 ns`, worst setup slack `+0.465 ns`, post-route $F_{\max} = 1000 / (7.0 - 0.4646) = \mathbf{153.01\text{ MHz}}$ (`316.34 MHz` nominal), core area `16,900.00 µm²`, wirelength `2,328 µm`, `1,883` total cells (`319` active instances), `0` DRC errors, `0` LVS errors.
+- **Final physical-design summary**: `CLOCK_PERIOD = 7.0 ns`, worst setup slack `+0.465 ns`, post-route $F_{\max} = 1000 / (7.0 - 0.4646) = \mathbf{153.01\text{ MHz}}$ (`316.34 MHz` nominal), core area `17,759.50 µm²` (die area `22,500.00 µm²`), wirelength `2,328 µm`, `1,883` total cells (`328` standard-cell instances + `1,555` fill/decap cells), `0` DRC errors, `0` LVS errors.
